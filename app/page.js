@@ -13,9 +13,12 @@ const [source, setSource]= useState([]);
 const [destination, setDestination]= useState([]);
 
   return (
+    // makes the source aka pickup location globally accessible
     <SourceContext.Provider value={{source, setSource}}>
-      <DestinationContext.Provider value={{destination,setDestination}}>
-      <LoadScript 
+    {/*makes the destination aka Dropoff location globally accessible */}
+    <DestinationContext.Provider value={{destination,setDestination}}>
+    {/* allows us to only need one api key use that is, we dont need to state the api key in other files now */}
+    <LoadScript 
       libraries={["places"]}
       googleMapsApiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}>
     <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">

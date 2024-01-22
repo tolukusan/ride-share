@@ -1,56 +1,88 @@
+"use client"
 import React, { useContext, useEffect, useState } from 'react'
-import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api';
+import { DirectionsRenderer, GoogleMap, MarkerF, OverlayView, useJsApiLoader } from '@react-google-maps/api';
 import { SourceContext } from '@/context/SourceContext';
 import { DestinationContext } from '@/context/DestinationContext';
 
 function GoogleMapSection() {
   const containerStyle = {
     width: '100%',
-    height: window.innerWidth*0.8
+    height: window.innerWidth*0.5
   };
   
   const {source, setSource}=useContext(SourceContext);
   const {destination,setDestination}=useContext(DestinationContext);
 
   const [center, setCenter]=useState(
-    {lat: 1,
-    lng: 1
+    {lat: 6.5,
+    lng: 3.3
   });
 
   const [map, setMap] = React.useState(null)
+  const [directionRoutePoints, setDirectionRoutePoint] = useState([]);
 
   //basically the useEffect function over here works with the [sources] or [destination] 
   useEffect(()=>{
-    if(source?.length!=[]&&map){
+    if (source.length !== 0 && map) {
+
       map.panTo(
         {
           lat:source.lat,
          lng:source.lng
         })
-
+  
       setCenter({
         lat:source.lat,
         lng:source.lng
       })
     }
+
+  
+    if (source.length!==0&&destination.length!==0){
+      directionRoute();
+    }
   },[source])
 
   useEffect(()=>{
-    if(destination?.length!=[]&&map){
+
+    if (destination.length !== 0 && map) {
+      // your code
       setCenter({
         lat:destination.lat,
         lng:destination.lng
       })
     }
+   
+    if (source.length!==0&&destination.length!==0){
+      directionRoute();
+    }
   },[destination])
 
-  const onLoad = React.useCallback(function callback(map) {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds(center);
-    map.fitBounds(bounds);
+  const directionRoute = async () => {
+    const DirectionService = new google.maps.DirectionsService();
+  
+    try {
+      const result = await DirectionService.route({
+        origin: { lat: source.lat, lng: source.lng },
+        destination: { lat: destination.lat, lng: destination.lng },
+        travelMode: google.maps.TravelMode.DRIVING,
+      });
+  
+      setDirectionRoutePoint(result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  
 
-    setMap(map)
-  }, [])
+  const onLoad = React.useCallback(function callback(map) {
+   
+    const bounds = new window.google.maps.LatLngBounds();
+    bounds.extend(center);
+  map.fitBounds(bounds);
+  setMap(map);
+}, [center]);
 
   const onUnmount = React.useCallback(function callback(map) {
     setMap(null)
@@ -80,6 +112,15 @@ function GoogleMapSection() {
         />:null}
         { /* Child components, such as markers, info windows, etc. */ }
         <></>
+        <DirectionsRenderer
+        directions={directionRoutePoints}
+        options={{
+          polylineOptions:{
+            strokeColor:'#374151'
+          },
+          suppressMarkers:true
+        }}
+        />
       </GoogleMap>
   )
 }
