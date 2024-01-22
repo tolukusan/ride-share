@@ -10,6 +10,7 @@ export default function Home() {
         <SearchSection/>
       </div>
       <div className="col-span-2">
+        
         <GoogleMapSection/> 
         </div>
     </div>
