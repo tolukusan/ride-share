@@ -48,7 +48,6 @@ function InputItem({type}) {
         <Image src={type=='source'?'/source.png':'/dest.png'} width={15} height={15}/>
       
         <GooglePlacesAutocomplete 
-        apiKey={process.env.NEXT_PUBLIC_GOOGLE_API_KEY}
         selectProps={{
           value,
           onChange: (place)=>{getLatAndLng(place,type);
