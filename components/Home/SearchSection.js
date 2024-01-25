@@ -25,10 +25,11 @@ function SearchSection() {
         </p>
             <InputItem type='source'/>
             <InputItem type='destination'/>
-
-            <button className='p-3 bg-black w-full mt-5 text-white rounded-lg'>
+            <a href="https://ashilora-kaisumi.github.io/Adali.com/Home%20Page.html">
+            <button className='p-3 bg-black w-full mt-5 text-white rounded-lg' >
               Search
             </button>
+            </a>
     </div>
   )
 }
